@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	c := cache.NewCache[string](3)
+	c := cache.NewCache[string, string](3)
 	fmt.Printf("Items are: %v\n", c.Items())
 
 	c.Set("1", "one")

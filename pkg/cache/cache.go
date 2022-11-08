@@ -1,34 +1,34 @@
 package cache
 
-type Cache[T any] struct {
+type Cache[K comparable, V any] struct {
 	capacity uint
 	length   uint
-	head     *Node[T]
+	head     *Node[K, V]
 }
 
-type Node[T any] struct {
-	key     string
-	payload T
-	prev    *Node[T]
-	next    *Node[T]
+type Node[K comparable, V any] struct {
+	key     K
+	payload V
+	prev    *Node[K, V]
+	next    *Node[K, V]
 }
 
-func NewCache[T any](capacity uint) Cache[T] {
-	return Cache[T]{
+func NewCache[K comparable, V any](capacity uint) Cache[K, V] {
+	return Cache[K, V]{
 		capacity: capacity,
 		length:   0,
 		head:     nil,
 	}
 }
 
-func (c *Cache[T]) Length() uint {
+func (c *Cache[K, V]) Length() uint {
 	return c.length
 }
 
-func (c *Cache[T]) Items() []*Node[T] {
+func (c *Cache[K, V]) Items() []*Node[K, V] {
 	node := c.head
 
-	items := make([]*Node[T], 0, c.length)
+	items := make([]*Node[K, V], 0, c.length)
 
 	for node != nil {
 		items = append(items, node)
@@ -38,7 +38,7 @@ func (c *Cache[T]) Items() []*Node[T] {
 	return items
 }
 
-func (c *Cache[T]) Set(key string, payload T) {
+func (c *Cache[K, V]) Set(key K, payload V) {
 	if c.length >= c.capacity {
 		node := c.head
 
@@ -53,7 +53,7 @@ func (c *Cache[T]) Set(key string, payload T) {
 	}
 
 	if c.head == nil {
-		c.head = &Node[T]{
+		c.head = &Node[K, V]{
 			key:     key,
 			payload: payload,
 			prev:    nil,
@@ -64,7 +64,7 @@ func (c *Cache[T]) Set(key string, payload T) {
 
 		next := c.head
 
-		newNode := Node[T]{
+		newNode := Node[K, V]{
 			key:     key,
 			payload: payload,
 			prev:    nil,
@@ -79,7 +79,7 @@ func (c *Cache[T]) Set(key string, payload T) {
 
 }
 
-func (c *Cache[T]) Has(key string) bool {
+func (c *Cache[K, V]) Has(key K) bool {
 	node := c.head
 
 	for node != nil {
@@ -93,7 +93,7 @@ func (c *Cache[T]) Has(key string) bool {
 	return false
 }
 
-func (c *Cache[T]) Get(key string) *T {
+func (c *Cache[K, V]) Get(key K) *V {
 	node := c.head
 
 	for node != nil {
